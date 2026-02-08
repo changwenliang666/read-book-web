@@ -1,0 +1,34 @@
+:root {
+    --color-base-1: #fff;
+    --color-base-2: #0d141e;
+    --color-base-3: #ebedf1;
+    --color-base-4: #1E1E1E;
+    --color-base-5: #2F2F2F;
+
+
+
+
+    --dark-color-base-1: #262628;
+    --dark-color-base-2: #9ea0a5;
+    --dark-color-base-3: #3e4045;
+    --dark-color-base-4: #1e1e1e;
+    --dark-color-base-5: #2F2F2F;
+}
+
+.dark-mode {
+    --background-page-primary: var(--dark-color-base-1);
+    --text-primary: var(--dark-color-base-2);
+    --text-white: var(--color-base-1);
+    --border-primary: var(--dark-color-base-3);
+    --button-base-primary: var(--dark-color-base-4);
+    --button-base-primary-hover: var(--dark-color-base-5);
+}
+
+.light-mode {
+    --background-page-primary: var(--color-base-1);
+    --text-primary: var(--color-base-2);
+    --border-primary: var(--color-base-3);
+    --button-base-primary: var(--color-base-4);
+    --button-base-primary-hover: var(--color-base-5);
+    --text-white: var(--color-base-1);
+}

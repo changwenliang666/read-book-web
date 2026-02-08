@@ -1,25 +1,29 @@
 <template>
   <router-view />
+  <login-win v-if="showLoginWin"></login-win>
 </template>
 <script lang="ts" setup>
-import {userLogin} from './httpRequest/login'
-import { onMounted } from 'vue'
-import constants from './constants/index'
+import { getTheme, changeTheme } from '@/utils/theme'
+import { computed, onMounted } from 'vue';
+import LoginWin from '@/components/Login/LoginWin.vue';
+import { useLoginStore } from './store/loginStore';
+import useUserStore from './store/userStore';
+
+const userStore = useUserStore()
+
+const loginStore = useLoginStore()
+
+const showLoginWin = computed(() => {
+  return loginStore.isShowLoginWin
+})
+
+function initTheme() { // 初始化主题颜色
+  changeTheme(getTheme());
+}
 
 onMounted(() => {
-  console.log("haha")
-  userLogin({
-    username:'changwenliang678',
-    password:'12345678'
-  }).then(res => {
-    console.log('res---',res)
-    if(res.code === 0) {
-      localStorage.setItem(constants.READ_BOOK_WEB_TOKEN,res.data.token)
-    }else {
+  initTheme();
+  userStore.getUserInfo();
 
-    }
-    localStorage.set
-  })
 })
 </script>
-
