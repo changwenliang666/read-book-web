@@ -22,7 +22,13 @@ request.interceptors.response.use(res => {
             type: 'error',
             message: res.data.message
         })
-        return new Promise(() => { })
+        return Promise.resolve<any>({
+            ...res,
+            data: {
+                ...res.data,
+                _handle: true
+            }
+        })
     }
     return res
 }, error => {

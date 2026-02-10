@@ -14,10 +14,10 @@ const useUserStore = defineStore('userStore', () => {
 
     function getUserInfo() {
         getUserInfoPro().then(res => {
-            console.log('res---', res)
             if (res.code === 0) {
                 setUserInfo(res.data)
             } else {
+                if (res._handle) return;
                 showMessage({
                     type: 'error',
                     message: res.message
