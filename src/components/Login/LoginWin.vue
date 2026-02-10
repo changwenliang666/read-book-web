@@ -84,9 +84,8 @@ function submitLoginForm(formEl: FormInstance | undefined) {
                     })
                     const token = res.data.token;
                     localStorage.setItem(constants.READ_BOOK_WEB_TOKEN, token);
-                    localStorage.setItem(constants.READ_BOOK_WEB_USER_ID, res.data.id);
                     loginStore.setShowLogin(false);
-                    userStore.getUserInfo(res.data.id);
+                    userStore.getUserInfo();
                 } else {
                     showMessage({
                         type: 'error',

@@ -1,5 +1,6 @@
 import axios from "axios";
 import constants from "@/constants/index";
+import { showMessage } from "@/utils";
 
 const request = axios.create({
     baseURL: import.meta.env.VITE_HTTP_BASE_URL,
@@ -15,8 +16,15 @@ request.interceptors.request.use(config => {
 })
 
 
-request.interceptors.response.use(config => {
-    return config
+request.interceptors.response.use(res => {
+    if (res.data.code === 401) {
+        showMessage({
+            type: 'error',
+            message: res.data.message
+        })
+        return new Promise(() => { })
+    }
+    return res
 }, error => {
     return Promise.reject(error)
 })

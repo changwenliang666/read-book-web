@@ -12,21 +12,18 @@ const useUserStore = defineStore('userStore', () => {
         userInfo.value = value;
     }
 
-    function getUserInfo(id: number) {
-        const userId = id || localStorage.getItem(constants.READ_BOOK_WEB_USER_ID)
-        if (userId) {
-            getUserInfoPro(Number(userId)).then(res => {
-                if (res.code === 0) {
-                    setUserInfo(res.data)
-                } else {
-                    showMessage({
-                        type: 'error',
-                        message: res.message
-                    })
-                }
-            })
-        }
-
+    function getUserInfo() {
+        getUserInfoPro().then(res => {
+            console.log('res---', res)
+            if (res.code === 0) {
+                setUserInfo(res.data)
+            } else {
+                showMessage({
+                    type: 'error',
+                    message: res.message
+                })
+            }
+        })
     }
     return {
         userInfo,
