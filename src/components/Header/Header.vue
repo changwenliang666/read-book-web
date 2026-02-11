@@ -6,16 +6,18 @@
         </div>
         <div class="right-info">
             <div class="theme-info" @click.stop="handleChangeTheme">
-
                 <iconpark-icon v-if="theme === 'light'" name="sun-one" size="24"
                     color="var(--text-primary)"></iconpark-icon>
                 <iconpark-icon v-else name="moon" size="24" color="var(--text-primary)"></iconpark-icon>
-
-                <!-- <div>{{ theme === 'light' ? '夜间模式' : '日间模式' }}</div> -->
             </div>
             <div class="user-info">
-                <iconpark-icon name="user2" size="24" color="var(--text-primary)"
-                    @click.stop="handleLogin"></iconpark-icon>
+                <iconpark-icon v-if="!isLogin" name="user2" size="24" color="var(--text-primary)"
+                    @click.stop="handleLogin">
+                </iconpark-icon>
+                <template v-else>
+                    <img class="user-profile" src="@/assets/image/user_default_profile.png" alt="">
+                    <div class="username">{{ userInfo.username }}</div>
+                </template>
             </div>
         </div>
     </div>
@@ -23,15 +25,27 @@
 <script setup lang="ts">
 import { useConfigStore } from '@/store/configStore';
 import { useLoginStore } from '@/store/loginStore';
+import useUserStore from '@/store/userStore';
+
 import { changeTheme } from '@/utils/theme';
 import { computed } from 'vue';
 
 const loginStore = useLoginStore();
 const configStore = useConfigStore();
+const userStore = useUserStore();
 
 const theme = computed(() => {
     return configStore.theme
 })
+
+const isLogin = computed(() => {
+    return userStore.isLogin
+})
+
+const userInfo = computed(() => {
+    return userStore.userInfo
+})
+
 
 function handleChangeTheme() {
     changeTheme(theme.value === 'light' ? 'dark' : 'light')
@@ -44,6 +58,9 @@ function handleLogin() {
 </script>
 <style lang="scss" scoped>
 .header-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,6 +71,7 @@ function handleLogin() {
     box-sizing: border-box;
     user-select: none;
     cursor: pointer;
+    background-color: var(--background-page-primary);
 
     .left-info {
         height: 72px;
@@ -80,7 +98,24 @@ function handleLogin() {
         }
 
         .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             cursor: pointer;
+
+            .user-profile {
+                width: 40px;
+                height: 40px;
+                object-fit: cover;
+            }
+
+            .username {
+                width: 140px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                color: var(--text-primary);
+            }
         }
     }
 }

@@ -1,4 +1,3 @@
-import constants from "@/constants";
 import { getUserInfoPro } from "@/httpRequest/user";
 import { showMessage } from "@/utils";
 import { defineStore } from "pinia";
@@ -7,9 +6,11 @@ import { ref } from "vue";
 
 const useUserStore = defineStore('userStore', () => {
     const userInfo = ref<any>({})
+    const isLogin = ref(false);
 
     function setUserInfo(value: any) {
         userInfo.value = value;
+        isLogin.value = (Object.keys(value).length > 0)
     }
 
     function getUserInfo() {
@@ -27,6 +28,7 @@ const useUserStore = defineStore('userStore', () => {
     }
     return {
         userInfo,
+        isLogin,
         setUserInfo,
         getUserInfo
     }
