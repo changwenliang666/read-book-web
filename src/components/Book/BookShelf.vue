@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { getBookList } from '@/httpRequest/book';
 import { onMounted, ref } from 'vue';
-import UploadBook from '../upload/uploadBook.vue';
+import UploadBook from '../Upload/UploadBook.vue';
 
 
 const bookList = ref<any>([])

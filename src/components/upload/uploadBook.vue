@@ -5,7 +5,7 @@
     <input ref="inputBox" class="upload-input" type="file" :accept="acceptExt" @change="handleChange">
 </template>
 <script lang="ts" setup>
-import { uploadFile } from '@/httpRequest/upload';
+import { createBook } from '@/httpRequest/book';
 import { showMessage } from '@/utils';
 import { computed, ref } from 'vue';
 
@@ -60,7 +60,7 @@ const startUpload = (file: File) => {
     let formData = new FormData();
     formData.append('file', file);
     return new Promise((resolve, reject) => {
-        uploadFile(formData).then(res => {
+        createBook(formData).then(res => {
             if (res.code === 0) {
                 showMessage({
                     type: 'success',
