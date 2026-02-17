@@ -1,33 +1,70 @@
 <template>
     <div class="book-shelf">
+        <div class="shelf-title">
+            {{ shelfTitlt }}
+        </div>
         <el-scrollbar class="book-scroll-bar">
             <div class="book-list">
                 <div class="book-item" v-for="(item, index) in bookList" :key="index">
                     {{ item.name }}
+                </div>
+                <div class="book-upload">
+                    <upload-book :accept-files="['.epub']">
+                        <div class="add-book-icon">
+                            <iconpark-icon name="add-one" size="24"></iconpark-icon>
+                        </div>
+                    </upload-book>
                 </div>
             </div>
         </el-scrollbar>
     </div>
 </template>
 <script setup lang="ts">
+import { getBookList } from '@/httpRequest/book';
 import { onMounted, ref } from 'vue';
+import UploadBook from '../upload/uploadBook.vue';
+
 
 const bookList = ref<any>([])
+const isLoading = ref<boolean>(false)
+const props = defineProps({
+    shelfTitlt: {
+        type: String,
+        default: "书架"
+    }
+})
+
+function initBookData() {
+    isLoading.value = true;
+    getBookList().then(res => {
+        if (res.code === 0) {
+            bookList.value = res.data;
+        }
+    }).finally(() => {
+        isLoading.value = false;
+    })
+}
+
 
 onMounted(() => {
-    for (let i = 0; i < 20; i++) {
-        bookList.value.push({
-            name: `第${i + 1}本书`
-        })
-    }
+    initBookData();
 })
 </script>
 <style lang="scss" scoped>
 .book-shelf {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     width: 100%;
     height: 100%;
     padding: 20px 20px;
     box-sizing: border-box;
+
+    .shelf-title {
+        padding: 0 12px;
+        font-size: 24px;
+        color: var(--text-primary);
+    }
 
     .book-scroll-bar {
         height: 100%;
@@ -36,9 +73,9 @@ onMounted(() => {
     .book-list {
         padding: 0 12px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+        grid-template-columns: repeat(auto-fit, 128px);
         gap: 16px;
-        justify-content: space-between;
+        // justify-content: space-between;
         box-sizing: border-box;
     }
 
@@ -46,6 +83,21 @@ onMounted(() => {
         height: 185px;
         background-color: goldenrod;
         border-radius: 10px;
+    }
+
+    .book-upload {
+        height: 185px;
+        background-color: gainsboro;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .add-book-icon {
+            &:hover {
+                cursor: pointer;
+            }
+        }
     }
 }
 </style>

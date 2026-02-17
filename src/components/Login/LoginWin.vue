@@ -86,6 +86,7 @@ function submitLoginForm(formEl: FormInstance | undefined) {
                     localStorage.setItem(constants.READ_BOOK_WEB_TOKEN, token);
                     loginStore.setShowLogin(false);
                     userStore.getUserInfo();
+                    window.location.reload();
                 } else {
                     showMessage({
                         type: 'error',

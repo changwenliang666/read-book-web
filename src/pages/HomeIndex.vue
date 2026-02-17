@@ -4,13 +4,16 @@
         <Header></Header>
         <div class="home-main">
             <!-- 个人书架 -->
-            <BookShelf></BookShelf>
+            <BookShelf :title="shelfTitle"></BookShelf>
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import BookShelf from '@/components/Book/BookShelf.vue';
 import Header from '@/components/Header/Header.vue';
+import { ref } from 'vue';
+
+const shelfTitle = ref("个人书架")
 
 </script>
 <style lang="scss" scoped>
