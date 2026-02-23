@@ -6,10 +6,11 @@
         <el-scrollbar class="book-scroll-bar">
             <div class="book-list">
                 <div class="book-item" v-for="(item, index) in bookList" :key="index">
-                    {{ item.name }}
+                    <!-- {{ item.name }} -->
+                    <img :src="`http://localhost:3000/${item.cover}`" class="book-cover" />
                 </div>
                 <div class="book-upload">
-                    <upload-book :accept-files="['.epub']">
+                    <upload-book :accept-files="['.epub']" @create-success="createBookSuccess">
                         <div class="add-book-icon">
                             <iconpark-icon name="add-one" size="24"></iconpark-icon>
                         </div>
@@ -43,6 +44,10 @@ function initBookData() {
     }).finally(() => {
         isLoading.value = false;
     })
+}
+
+function createBookSuccess() {
+    initBookData()
 }
 
 
@@ -83,6 +88,12 @@ onMounted(() => {
         height: 185px;
         background-color: goldenrod;
         border-radius: 10px;
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
     }
 
     .book-upload {

@@ -16,17 +16,23 @@ const props = defineProps({
     }
 })
 
+const emits = defineEmits(["createSuccess", "createFail"])
+
 const inputBox = ref<any>(null)
 
 const acceptExt = computed(() => {
     return props.acceptFiles.join(',')
 })
 
-async function handleChange(e: any) {
+function handleChange(e: any) {
     const file = e.target.files[0];
     if (verifyFile(file)) {
-        await startUpload(file)
-        e.target.value = '';
+        startUpload(file).then(_ => {
+            emits("createSuccess")
+        }, err => {
+            emits("createFail", err)
+        })
+
     }
 }
 
