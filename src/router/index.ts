@@ -8,6 +8,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/pages/HomeIndex.vue')
     },
     {
+        path: '/read-book',
+        name: 'ReadBook',
+        component: () => import("@/pages/BookRead/index.vue")
+    },
+    {
         path: '/:pathMatch(.*)',
         name: 'NotFoundPage',
         component: () => import("@/pages/NotFoundPage.vue")

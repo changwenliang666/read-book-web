@@ -1,19 +1,21 @@
 <template>
     <div class="book-shelf">
         <div class="shelf-title">
-            {{ shelfTitlt }}
+            {{ name }}
         </div>
         <el-scrollbar class="book-scroll-bar">
             <div class="book-list">
-                <div class="book-item" v-for="(item, index) in bookList" :key="index">
-                    <!-- {{ item.name }} -->
+                <div class="book-item" v-for="(item, index) in bookList" :key="index" @click="handleClick(item)">
                     <img :src="`http://localhost:3000/${item.cover}`" class="book-cover" />
+                    <div class="book-name" :title="item.name">{{ item.name }}</div>
                 </div>
                 <div class="book-upload">
                     <upload-book :accept-files="['.epub']" @create-success="createBookSuccess">
-                        <div class="add-book-icon">
-                            <iconpark-icon name="add-one" size="24"></iconpark-icon>
-                        </div>
+                        <el-tooltip class="box-item" effect="dark" content="添加图书" placement="top">
+                            <div class="add-book-icon">
+                                <iconpark-icon name="add-one" size="24"></iconpark-icon>
+                            </div>
+                        </el-tooltip>
                     </upload-book>
                 </div>
             </div>
@@ -21,39 +23,29 @@
     </div>
 </template>
 <script setup lang="ts">
-import { getBookList } from '@/httpRequest/book';
-import { onMounted, ref } from 'vue';
 import UploadBook from '../Upload/UploadBook.vue';
 
-
-const bookList = ref<any>([])
-const isLoading = ref<boolean>(false)
 const props = defineProps({
-    shelfTitlt: {
+    name: {
         type: String,
         default: "书架"
+    },
+    bookList: {
+        type: Array,
+        default: () => []
     }
 })
+const emits = defineEmits(["select", "addBookSuccess"])
 
-function initBookData() {
-    isLoading.value = true;
-    getBookList().then(res => {
-        if (res.code === 0) {
-            bookList.value = res.data;
-        }
-    }).finally(() => {
-        isLoading.value = false;
-    })
-}
 
 function createBookSuccess() {
-    initBookData()
+    emits("addBookSuccess")
 }
 
+function handleClick(bookInfo: any) {
+    emits("select", bookInfo)
+}
 
-onMounted(() => {
-    initBookData();
-})
 </script>
 <style lang="scss" scoped>
 .book-shelf {
@@ -67,8 +59,9 @@ onMounted(() => {
 
     .shelf-title {
         padding: 0 12px;
-        font-size: 24px;
+        font-size: 20px;
         color: var(--text-primary);
+        font-weight: 500;
     }
 
     .book-scroll-bar {
@@ -85,14 +78,27 @@ onMounted(() => {
     }
 
     .book-item {
-        height: 185px;
-        background-color: goldenrod;
-        border-radius: 10px;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        cursor: pointer;
 
         .book-cover {
             width: 100%;
             height: 100%;
             object-fit: fill;
+            border-radius: 10px;
+        }
+
+        .book-name {
+            width: 100%;
+            color: var(--text-primary);
+            font-size: 14px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-weight: 500;
         }
     }
 

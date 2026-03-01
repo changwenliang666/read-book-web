@@ -1,34 +1,33 @@
 :root {
-    --color-base-1: #fff;
-    --color-base-2: #0d141e;
-    --color-base-3: #ebedf1;
-    --color-base-4: #1E1E1E;
-    --color-base-5: #2F2F2F;
+    /* Light Neutral Colors */
+    --color-white: #fff;
+    --color-black-900: #0d141e;
+    --color-gray-100: #ebedf1;
+    --color-gray-800: #1e1e1e;
+    --color-gray-700: #2f2f2f;
 
-
-
-
-    --dark-color-base-1: #262628;
-    --dark-color-base-2: #9ea0a5;
-    --dark-color-base-3: #3e4045;
-    --dark-color-base-4: #1e1e1e;
-    --dark-color-base-5: #2F2F2F;
+    /* Dark Neutral Colors */
+    --color-dark-900: #262628;
+    --color-dark-300: #9ea0a5;
+    --color-dark-600: #3e4045;
+    --color-dark-800: #1e1e1e;
+    --color-dark-700: #2f2f2f;
 }
 
 .dark-mode {
-    --background-page-primary: var(--dark-color-base-1);
-    --text-primary: var(--dark-color-base-2);
-    --text-white: var(--color-base-1);
-    --border-primary: var(--dark-color-base-3);
-    --button-base-primary: var(--dark-color-base-4);
-    --button-base-primary-hover: var(--dark-color-base-5);
+    --background-page-primary: var(--color-dark-900);
+    --text-primary: var(--color-dark-300);
+    --text-white: var(--color-white);
+    --border-primary: var(--color-dark-600);
+    --button-base-primary: var(--color-dark-800);
+    --button-base-primary-hover: var(--color-dark-700);
 }
 
 .light-mode {
-    --background-page-primary: var(--color-base-1);
-    --text-primary: var(--color-base-2);
-    --border-primary: var(--color-base-3);
-    --button-base-primary: var(--color-base-4);
-    --button-base-primary-hover: var(--color-base-5);
-    --text-white: var(--color-base-1);
+    --background-page-primary: var(--color-white);
+    --text-primary: var(--color-black-900);
+    --border-primary: var(--color-gray-100);
+    --button-base-primary: var(--color-gray-800);
+    --button-base-primary-hover: var(--color-gray-700);
+    --text-white: var(--color-white);
 }
