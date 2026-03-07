@@ -65,13 +65,13 @@ async function displayEpub() {
     let bookProgress = props.progress ? props.progress : null;
     if (bookProgress) {
         try {
-            rendition.value.display(props.progress.cfi);
+            await rendition.value.display(props.progress.cfi);
         } catch (error) {
             // 按照章节恢复
-            rendition.value.display(props.progress.href);
+            await rendition.value.display(props.progress.href);
         }
     } else {
-        rendition.value.display();
+        await rendition.value.display();
     }
 }
 
