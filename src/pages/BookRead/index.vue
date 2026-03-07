@@ -25,6 +25,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { updateBookProgress } from '@/httpRequest/book';
 import { formatCurTime } from '@/utils/timeFormat';
+import type { bookProgressType } from '@/types/book';
 
 const bookSourceUrl = ref('');
 const isLoading = ref(false);
@@ -78,13 +79,16 @@ function listenWindowSize() {
 
 // 保存书籍阅读进度到本地
 function saveReadProgressToLocal(progress: string) {
-    localStorage.setItem(`book_progress_id_${bookId.value}`, progress);
+    localStorage.setItem(
+        `book_progress_id_${bookId.value}`,
+        JSON.stringify(progress),
+    );
     uploadProgressToService();
 }
 
 function uploadBookProgress(
     bookId: number,
-    progress: string,
+    progress: bookProgressType,
     updateTime: string,
 ) {
     updateBookProgress({ bookId, progress, updateTime }).then((res) => {
@@ -100,11 +104,13 @@ function uploadProgressToService() {
     clearTimeout(uploadProgressTimer.value);
     uploadProgressTimer.value = setTimeout(() => {
         let localProgress =
-            localStorage.getItem(`book_progress_id_${bookId.value}`) || '';
-        if (localProgress != bookProgress.value) {
-            console.log('localProgress', localProgress, bookProgress.value);
-            uploadBookProgress(bookId.value, localProgress, formatCurTime());
-        }
+            JSON.parse(
+                localStorage.getItem(
+                    `book_progress_id_${bookId.value}`,
+                ) as string,
+            ) || {};
+
+        uploadBookProgress(bookId.value, localProgress, formatCurTime());
     }, 5 * 1000);
 }
 // 关闭页面，立即保存
@@ -112,7 +118,11 @@ function listenWindowClose() {
     window.addEventListener('beforeunload', () => {
         alert('确定要离开页面吗');
         let localProgress =
-            localStorage.getItem(`book_progress_id_${bookId.value}`) || '';
+            JSON.parse(
+                localStorage.getItem(
+                    `book_progress_id_${bookId.value}`,
+                ) as string,
+            ) || {};
         navigator.sendBeacon(
             `${import.meta.env.VITE_HTTP_BASE_URL}/book/update-book-progress`,
             JSON.stringify({

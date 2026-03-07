@@ -1,10 +1,5 @@
 import request from "./axiosConfig";
-
-interface savebookProgress {
-    progress:string,
-    bookId:number,
-    updateTime:string
-}
+import type {savebookProgress} from "@/types/book"
 
 export function getBookList(params: any) {
     return request.get('/book/get-book-list', params).then((data) => data.data)

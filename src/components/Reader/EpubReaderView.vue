@@ -21,7 +21,7 @@ const emits = defineEmits(['updateReadProgress']);
 const props = defineProps({
     bookSourceUrl: String,
     progress: {
-        type: String,
+        type: Object,
         default: '',
     },
     widthArea: {
@@ -37,6 +37,7 @@ const props = defineProps({
 const rendition = ref(null);
 const book = ref(null);
 const currentCfi = ref(null);
+const currentHref = ref(null);
 
 function prePage() {
     rendition.value?.prev();
@@ -49,22 +50,32 @@ function nextPage() {
 function relocatedEpub() {
     if (!rendition.value) return;
     rendition.value.on('relocated', (location) => {
+        if (!location || !location.start) return null;
         currentCfi.value = location.start.cfi;
-        emits('updateReadProgress', currentCfi.value);
+        currentHref.value = location.start.href;
+        emits('updateReadProgress', {
+            cfi: currentCfi.value,
+            href: currentHref.value,
+        });
     });
 }
 
 // 渲染电子书
-function displayEpub() {
+async function displayEpub() {
     let bookProgress = props.progress ? props.progress : null;
     if (bookProgress) {
-        rendition.value.display(bookProgress);
+        try {
+            rendition.value.display(props.progress.cfi);
+        } catch (error) {
+            // 按照章节恢复
+            rendition.value.display(props.progress.href);
+        }
     } else {
         rendition.value.display();
     }
 }
 
-function initEpubData() {
+async function initEpubData() {
     try {
         book.value = Epub(props.bookSourceUrl);
         rendition.value = book.value.renderTo('area', {
@@ -75,8 +86,8 @@ function initEpubData() {
             spread: 'auto',
         });
 
-        relocatedEpub();
         displayEpub();
+        relocatedEpub();
     } catch (error) {
         console.log('加载书籍失败:', error);
     }
