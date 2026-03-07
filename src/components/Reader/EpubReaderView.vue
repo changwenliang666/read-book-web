@@ -14,68 +14,87 @@
     </div>
 </template>
 <script setup>
-import Epub from "epubjs"
-import { ref, onMounted } from "vue"
+import Epub from 'epubjs';
+import { ref, onMounted } from 'vue';
 
+const emits = defineEmits(['updateReadProgress']);
 const props = defineProps({
     bookSourceUrl: String,
+    progress: {
+        type: String,
+        default: '',
+    },
     widthArea: {
         type: Number,
-        default: 600
+        default: 600,
     },
     heightArea: {
         type: Number,
-        default: 400
+        default: 400,
     },
-})
+});
 
-const rendition = ref(null)
-const book = ref(null)
-const currentCfi = ref(null)
+const rendition = ref(null);
+const book = ref(null);
+const currentCfi = ref(null);
 
 function prePage() {
-    rendition.value?.prev()
+    rendition.value?.prev();
 }
 
 function nextPage() {
-    rendition.value?.next()
+    rendition.value?.next();
 }
 // 监听阅读位置
 function relocatedEpub() {
     if (!rendition.value) return;
-    rendition.value.on("relocated", (location) => {
-        currentCfi.value = location.start.cfi
-        console.log('阅读进度---', currentCfi.value)
-    })
+    rendition.value.on('relocated', (location) => {
+        currentCfi.value = location.start.cfi;
+        emits('updateReadProgress', currentCfi.value);
+    });
+}
+
+// 渲染电子书
+function displayEpub() {
+    let bookProgress = props.progress ? props.progress : null;
+    if (bookProgress) {
+        rendition.value.display(bookProgress);
+    } else {
+        rendition.value.display();
+    }
 }
 
 function initEpubData() {
-    book.value = Epub(props.bookSourceUrl)
-    rendition.value = book.value.renderTo("area", {
-        width: props.widthArea,
-        height: props.heightArea,
-        flow: "paginated",
-        allowScriptedContent: true,
-        spread: "auto"
-    })
+    try {
+        book.value = Epub(props.bookSourceUrl);
+        rendition.value = book.value.renderTo('area', {
+            width: props.widthArea,
+            height: props.heightArea,
+            flow: 'paginated',
+            allowScriptedContent: true,
+            spread: 'auto',
+        });
 
-    relocatedEpub()
-    rendition.value.display()
+        relocatedEpub();
+        displayEpub();
+    } catch (error) {
+        console.log('加载书籍失败:', error);
+    }
 }
 
 function resizeReader(width, height) {
     if (rendition.value.manager) {
-        rendition.value.manager.resize(width, height)
+        rendition.value.manager.resize(width, height);
     }
 }
 
 onMounted(() => {
-    initEpubData()
-})
+    initEpubData();
+});
 
 defineExpose({
-    resizeReader
-})
+    resizeReader,
+});
 </script>
 <style lang="scss" scoped>
 .epub-reader-view {
