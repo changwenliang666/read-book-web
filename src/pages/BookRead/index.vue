@@ -2,7 +2,8 @@
     <div class="book-read-page">
         <Header></Header>
         <div class="book-read-main">
-            <epub-read-view v-if="!isLoading" :bookSourceUrl="bookSourceUrl"></epub-read-view>
+            <epub-read-view ref="epubReadView" v-if="!isLoading" :bookSourceUrl="bookSourceUrl" :widthArea="widthArea"
+                :heightArea="heightArea"></epub-read-view>
         </div>
     </div>
 </template>
@@ -17,6 +18,9 @@ import { useRoute } from 'vue-router';
 
 const bookSourceUrl = ref('')
 const isLoading = ref(false)
+const widthArea = ref(0)
+const heightArea = ref(0)
+const epubReadView = ref(null)
 
 const route = useRoute()
 
@@ -39,8 +43,24 @@ function initPageData() {
     }
 }
 
+function updateEpubReadViewSize() {
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+    widthArea.value = width - 200;
+    heightArea.value = height - 302;
+    if (epubReadView.value) {
+        epubReadView.value?.resizeReader(widthArea.value, heightArea.value)
+    }
+}
+
+function listenWindowSize() {
+    window.addEventListener('resize', updateEpubReadViewSize)
+}
+
 onMounted(() => {
     initPageData()
+    updateEpubReadViewSize();
+    listenWindowSize();
 })
 </script>
 <style lang="scss" scoped>
@@ -51,8 +71,11 @@ onMounted(() => {
     box-sizing: border-box;
 
     .book-read-main {
+        display: flex;
+        justify-content: center;
+        padding: 80px 32px;
         height: 100%;
-        background-color: var(--background-page-primary);
+        background-color: var(--background-page-sencondary);
         box-sizing: border-box;
     }
 }

@@ -1,33 +1,56 @@
 :root {
     /* Light Neutral Colors */
     --color-white: #fff;
-    --color-black-900: #0d141e;
+
     --color-gray-100: #ebedf1;
-    --color-gray-800: #1e1e1e;
+    --color-gray-200: #5d646e;
+    --color-gray-300: #262628;
+    --color-gray-400: rgba(0, 0, 0, .1);
+    --color-gray-500: rgba(0, 0, 0, .1);
+    --color-gray-600: #f4f5f7;
     --color-gray-700: #2f2f2f;
+    --color-gray-800: #1e1e1e;
+
+
 
     /* Dark Neutral Colors */
-    --color-dark-900: #262628;
+    --color-dark-100: #3e4045;
+    --color-dark-200: #b2b4b8;
     --color-dark-300: #9ea0a5;
-    --color-dark-600: #3e4045;
-    --color-dark-800: #1e1e1e;
+    --colok-dark-400: hsla(0, 0%, 100%, .1);
+    --color-dark-500: rgba(0, 0, 0, .5);
     --color-dark-700: #2f2f2f;
+    --color-dark-800: #1e1e1e;
 }
 
 .dark-mode {
-    --background-page-primary: var(--color-dark-900);
-    --text-primary: var(--color-dark-300);
+    --background-page-primary: var(--color-dark-700);
+    --background-page-sencondary: var(--color-dark-800);
+
+    --text-primary: var(--color-dark-200);
     --text-white: var(--color-white);
+    --text-sencondary: var(--color-dark-200);
+
     --border-primary: var(--color-dark-600);
+
     --button-base-primary: var(--color-dark-800);
     --button-base-primary-hover: var(--color-dark-700);
+    --button-border-primary: var(--color-dark-200);
+    --button-border-primary-hover: var(--color-dark-500);
+
 }
 
 .light-mode {
     --background-page-primary: var(--color-white);
-    --text-primary: var(--color-black-900);
+    --background-page-sencondary: var(--color-gray-600);
+    --text-primary: var(--color-gray-300);
+    --text-white: var(--color-white);
+    --text-sencondary: var(--color-gray-200);
+
     --border-primary: var(--color-gray-100);
+
     --button-base-primary: var(--color-gray-800);
     --button-base-primary-hover: var(--color-gray-700);
-    --text-white: var(--color-white);
+    --button-border-primary: var(--color-gray-400);
+    --button-border-primary-hover: var(--color-gray-500);
 }
