@@ -63,12 +63,13 @@ function relocatedEpub() {
 // 渲染电子书
 async function displayEpub() {
     let bookProgress = props.progress ? props.progress : null;
-    if (bookProgress) {
+    if (bookProgress && bookProgress.cfi) {
         try {
             await rendition.value.display(props.progress.cfi);
         } catch (error) {
             // 按照章节恢复
-            await rendition.value.display(props.progress.href);
+            props.progress.href &&
+                (await rendition.value.display(props.progress.href));
         }
     } else {
         await rendition.value.display();

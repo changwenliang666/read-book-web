@@ -22,27 +22,27 @@ function initTheme() {
     changeTheme(getTheme());
 }
 
-function createSSE() {
-    let content = '';
-    const sse = new EventSource(
-        `${import.meta.env.VITE_HTTP_BASE_URL}/ai/get-deepseek-service`,
-    );
-    sse.onmessage = (e) => {
-        // e.data 是服务器发送的增量文本
-        content += e.data; // 追加文本
-        console.log('content---', content);
-    };
+// function createSSE() {
+//     let content = '';
+//     const sse = new EventSource(
+//         `${import.meta.env.VITE_HTTP_BASE_URL}/ai/get-deepseek-service`,
+//     );
+//     sse.onmessage = (e) => {
+//         // e.data 是服务器发送的增量文本
+//         content += e.data; // 追加文本
+//         console.log('content---', content);
+//     };
 
-    sse.onerror = (err) => {
-        console.error('SSE 错误:', err);
-        content += '\n[流式连接已断开]';
-        sse.close(); // 关闭连接
-    };
-}
+//     sse.onerror = (err) => {
+//         console.error('SSE 错误:', err);
+//         content += '\n[流式连接已断开]';
+//         sse.close(); // 关闭连接
+//     };
+// }
 
 onMounted(() => {
     initTheme();
     userStore.getUserInfo();
-    createSSE();
+    // createSSE();
 });
 </script>
