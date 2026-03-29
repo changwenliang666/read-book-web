@@ -2,37 +2,75 @@
     <div @click="handleClick">
         <slot></slot>
     </div>
-    <input ref="inputBox" class="upload-input" type="file" :accept="acceptExt" @change="handleChange">
+    <input
+        ref="inputBox"
+        class="upload-input"
+        type="file"
+        :accept="acceptExt"
+        @change="handleChange"
+    />
 </template>
 <script lang="ts" setup>
 import { createBook } from '@/httpRequest/book';
+import { getUploadFileUrl } from '@/httpRequest/upload';
 import { showMessage } from '@/utils';
 import { computed, ref } from 'vue';
 
 const props = defineProps({
     acceptFiles: {
         type: Array<string>,
-        default: () => []
-    }
-})
+        default: () => [],
+    },
+});
 
-const emits = defineEmits(["createSuccess", "createFail"])
+const emits = defineEmits(['createSuccess', 'createFail']);
 
-const inputBox = ref<any>(null)
+const inputBox = ref<any>(null);
 
 const acceptExt = computed(() => {
-    return props.acceptFiles.join(',')
-})
+    return props.acceptFiles.join(',');
+});
 
 function handleChange(e: any) {
     const file = e.target.files[0];
     if (verifyFile(file)) {
-        startUpload(file).then(_ => {
-            emits("createSuccess")
-        }, err => {
-            emits("createFail", err)
-        })
+        // startUpload(file).then(_ => {
+        //     emits("createSuccess")
+        // }, err => {
+        //     emits("createFail", err)
+        // })
+        getUploadFileUrl(file.name).then((res) => {
+            console.log('res---', res);
+            e.target.value = null;
+            if (res.code == 0) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('PUT', res.data.upload_url, true);
 
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        console.log(
+                            '上传进度---',
+                            Math.round((e.loaded / e.total) * 100),
+                        );
+                    }
+                };
+
+                xhr.onload = () => {
+                    console.log('上传成功');
+                };
+
+                xhr.onerror = () => {
+                    console.log('上传失败');
+                };
+
+                xhr.send(file);
+            } else {
+                showMessage({
+                    type: 'success',
+                    message: '获取文件上传地址失败',
+                });
+            }
+        });
     }
 }
 
@@ -41,50 +79,47 @@ function handleClick() {
 }
 
 function verifyFile(file: File): boolean {
-    if ((file.size / 1024 / 1024) > 50) {
+    if (file.size / 1024 / 1024 > 50) {
         showMessage({
             type: 'warning',
-            message: "文件大小不能超过50MB"
-        })
-        return false
-
+            message: '文件大小不能超过50MB',
+        });
+        return false;
     }
-    let fileNameArray = file.name.split('.')
-    let fileName = fileNameArray[fileNameArray.length - 1] || ''
+    let fileNameArray = file.name.split('.');
+    let fileName = fileNameArray[fileNameArray.length - 1] || '';
     if (!props.acceptFiles.includes(`.${fileName}`)) {
         showMessage({
             type: 'warning',
-            message: `只支持${props.acceptFiles.join(',')}等格式`
-        })
-        return false
+            message: `只支持${props.acceptFiles.join(',')}等格式`,
+        });
+        return false;
     }
 
-    return true
+    return true;
 }
 
 const startUpload = (file: File) => {
     let formData = new FormData();
     formData.append('file', file);
     return new Promise((resolve, reject) => {
-        createBook(formData).then(res => {
-            if (res.code === 0) {
-                showMessage({
-                    type: 'success',
-                    message: res.message
-                })
-                resolve(true)
-            } else {
-                reject(res.message)
-            }
-        }).catch(err => {
-            reject(err)
-        })
-    })
-
-}
-
-
-
+        createBook(formData)
+            .then((res) => {
+                if (res.code === 0) {
+                    showMessage({
+                        type: 'success',
+                        message: res.message,
+                    });
+                    resolve(true);
+                } else {
+                    reject(res.message);
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+};
 </script>
 <style lang="scss" scoped>
 .upload-input {
