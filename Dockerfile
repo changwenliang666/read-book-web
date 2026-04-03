@@ -16,4 +16,4 @@ RUN npm install -g serve
 EXPOSE 5173
 
 # 启动 dist 静态服务
-CMD ["serve", "-s", "dist", "-l", "80"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
