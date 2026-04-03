@@ -4,7 +4,6 @@ import { debounce, showMessage } from '@/utils';
 
 const request = axios.create({
     baseURL: import.meta.env.VITE_HTTP_BASE_URL,
-    timeout: 10000,
 });
 
 request.interceptors.request.use(
