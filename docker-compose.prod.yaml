@@ -1,0 +1,9 @@
+services:
+    read-book-pc:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: read-book-backend:latest
+        restart: always
+        env_file:
+            - .env.prod
