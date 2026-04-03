@@ -1,119 +1,140 @@
 <template>
     <div class="login-win">
         <div class="main" ref="loginMain">
-            <div class="title">
-                登录
-            </div>
+            <div class="title">登录</div>
             <div class="content">
-                <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules" label-width="auto"
-                    class="demo-ruleForm">
+                <el-form
+                    ref="ruleFormRef"
+                    style="max-width: 600px"
+                    :model="ruleForm"
+                    :rules="rules"
+                    label-width="auto"
+                    class="demo-ruleForm"
+                >
                     <el-form-item label="用户名" prop="username">
-                        <el-input class="common-input" v-model="ruleForm.username" type="text" autocomplete="off"
-                            clearable />
+                        <el-input
+                            class="common-input"
+                            v-model="ruleForm.username"
+                            type="text"
+                            autocomplete="off"
+                            clearable
+                        />
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
-                        <el-input class="common-input" v-model="ruleForm.password" type="password" autocomplete="off"
-                            clearable />
+                        <el-input
+                            class="common-input"
+                            v-model="ruleForm.password"
+                            type="password"
+                            autocomplete="off"
+                            clearable
+                        />
                     </el-form-item>
                 </el-form>
             </div>
             <div class="common-button" @click="submitLoginForm(ruleFormRef)">
                 <span v-if="!isLoading">登录</span>
-                <iconpark-icon v-else class="loading-animation" name="loading-four"
-                    color="var(--text-white)"></iconpark-icon>
+                <iconpark-icon
+                    v-else
+                    class="loading-animation"
+                    name="loading-four"
+                    color="var(--text-white)"
+                ></iconpark-icon>
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus';
 import { userLogin } from '@/httpRequest/login';
 import { showMessage } from '@/utils';
 import constants from '@/constants/index';
 import { useLoginStore } from '@/store/loginStore';
 import useUserStore from '@/store/userStore';
 
-const ruleFormRef = ref<FormInstance>()
-const isLoading = ref(false)
-const loginStore = useLoginStore()
-const userStore = useUserStore()
+const ruleFormRef = ref<FormInstance>();
+const isLoading = ref(false);
+const loginStore = useLoginStore();
+const userStore = useUserStore();
 
-const loginMain = ref<any>(null)
+const loginMain = ref<any>(null);
 
 const ruleForm = reactive({
     username: '',
-    password: "",
-})
+    password: '',
+});
 
-const validateUsername = (rule: any, value: any, callback: any) => {
+const validateUsername = (_: any, value: any, callback: any) => {
     if (value === '') {
-        callback(new Error('请输入用户名'))
+        callback(new Error('请输入用户名'));
     } else if (value.length < 5 || value.length > 50) {
-        callback(new Error("用户名的长度要在5~50之间!"))
+        callback(new Error('用户名的长度要在5~50之间!'));
     } else {
-        callback()
+        callback();
     }
-}
-const validatePassword = (rule: any, value: any, callback: any) => {
+};
+const validatePassword = (_: any, value: any, callback: any) => {
     if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error('请输入密码'));
     } else if (value.length < 8 || value.length > 100) {
-        callback(new Error("密码的长度要在8~100之间!"))
+        callback(new Error('密码的长度要在8~100之间!'));
     } else {
-        callback()
+        callback();
     }
-}
+};
 
 const rules = reactive<FormRules<typeof ruleForm>>({
     username: [{ validator: validateUsername, trigger: 'blur' }],
     password: [{ validator: validatePassword, trigger: 'blur' }],
-})
-
+});
 
 function submitLoginForm(formEl: FormInstance | undefined) {
-    if (!formEl) return
+    if (!formEl) return;
     formEl.validate((valid) => {
         if (valid) {
             isLoading.value = true;
-            userLogin(ruleForm).then(res => {
-                if (res.code === 0) {
-                    showMessage({
-                        type: 'success',
-                        message: res.message
-                    })
-                    const token = res.data.token;
-                    localStorage.setItem(constants.READ_BOOK_WEB_TOKEN, token);
-                    loginStore.setShowLogin(false);
-                    userStore.getUserInfo();
-                    window.location.reload();
-                } else {
-                    showMessage({
-                        type: 'error',
-                        message: res.message
-                    })
-                }
-            }).finally(() => {
-                isLoading.value = false;
-            })
+            userLogin(ruleForm)
+                .then((res) => {
+                    if (res.code === 0) {
+                        showMessage({
+                            type: 'success',
+                            message: res.message,
+                        });
+                        const token = res.data.token;
+                        localStorage.setItem(
+                            constants.READ_BOOK_WEB_TOKEN,
+                            token,
+                        );
+                        loginStore.setShowLogin(false);
+                        userStore.getUserInfo();
+                        window.location.reload();
+                    } else {
+                        showMessage({
+                            type: 'error',
+                            message: res.message,
+                        });
+                    }
+                })
+                .finally(() => {
+                    isLoading.value = false;
+                });
         }
-    })
+    });
 }
 
 function clickOutSise(e: any) {
     if (!loginMain.value.contains(e.target)) {
-        loginStore.setShowLogin(false)
+        loginStore.setShowLogin(false);
     }
 }
 
 onMounted(() => {
-    document.addEventListener('click', clickOutSise)
-})
+    document.addEventListener('click', clickOutSise);
+});
 
 onUnmounted(() => {
-    document.removeEventListener('click', clickOutSise)
-})
-
+    document.removeEventListener('click', clickOutSise);
+});
 </script>
 <style lang="scss" scoped>
 .login-win {

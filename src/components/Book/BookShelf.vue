@@ -49,7 +49,7 @@ const props = defineProps({
         default: '书架',
     },
     bookList: {
-        type: Array,
+        type: Array<any>,
         default: () => [],
     },
 });

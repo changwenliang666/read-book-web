@@ -35,7 +35,7 @@ const epubReadView = ref<any>(null);
 
 const route = useRoute();
 const bookId = ref<any>(null);
-const bookProgress = ref<string>('');
+const bookProgress = ref<Record<string, any>>(null);
 const uploadProgressTimer = ref<any>(null);
 
 function initPageData() {
