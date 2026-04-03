@@ -41,7 +41,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import UploadBook from '../Upload/UploadBook.vue';
+import UploadBook from '@/components/Upload/UploadBook.vue';
 
 const props = defineProps({
     name: {
