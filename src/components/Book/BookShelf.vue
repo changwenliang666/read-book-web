@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="book-upload">
-                    <upload-book
+                    <upload-file
                         :accept-files="['.epub']"
                         @create-success="createBookSuccess"
                     >
@@ -34,14 +34,14 @@
                                 ></iconpark-icon>
                             </div>
                         </el-tooltip>
-                    </upload-book>
+                    </upload-file>
                 </div>
             </div>
         </el-scrollbar>
     </div>
 </template>
 <script setup lang="ts">
-import UploadBook from '@/components/Upload/UploadBook.vue';
+import UploadFile from '@/components/Upload/UploadFile.vue';
 
 const props = defineProps({
     name: {
