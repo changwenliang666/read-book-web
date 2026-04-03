@@ -46,7 +46,7 @@ function initPageData() {
         getBookDetail(id)
             .then((res) => {
                 if (res.code === 0) {
-                    bookSourceUrl.value = `${import.meta.env.VITE_HTTP_BASE_URL}/${res.data.remote_url}`;
+                    bookSourceUrl.value = `${import.meta.env.VITE_FILE_BASE_URL}${res.data.remote_url}`;
                     if (res.data.progress) {
                         bookProgress.value = res.data.progress;
                     }

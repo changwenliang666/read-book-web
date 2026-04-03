@@ -79,10 +79,11 @@ async function displayEpub() {
 async function initEpubData() {
     try {
         book.value = Epub(props.bookSourceUrl);
+
         rendition.value = book.value.renderTo('area', {
             width: props.widthArea,
             height: props.heightArea,
-            flow: 'paginated',
+            flow: 'scrolled',
             allowScriptedContent: true,
             spread: 'auto',
         });
@@ -115,6 +116,7 @@ defineExpose({
     padding: 20px;
     border-radius: 20px;
     background-color: var(--background-page-primary);
+    overflow-x: hidden;
 
     .loading-view {
         width: var(--view-width);
@@ -148,6 +150,16 @@ defineExpose({
 
             &:hover {
                 background-color: var(--button-border-primary-hover);
+            }
+        }
+    }
+    #area {
+        :deep(.epub-container) {
+            overflow: unset !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            .page {
+                background-color: aqua !important;
             }
         }
     }

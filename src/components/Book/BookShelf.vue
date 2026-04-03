@@ -5,15 +5,33 @@
         </div>
         <el-scrollbar class="book-scroll-bar">
             <div class="book-list">
-                <div class="book-item" v-for="(item, index) in bookList" :key="index" @click="handleClick(item)">
-                    <img :src="`http://localhost:3000/${item.cover}`" class="book-cover" />
-                    <div class="book-name" :title="item.name">{{ item.name }}</div>
+                <div
+                    class="book-item"
+                    v-for="(item, index) in bookList"
+                    :key="index"
+                    @click="handleClick(item)"
+                >
+                    <img :src="getBookCover(item.cover)" class="book-cover" />
+                    <div class="book-name" :title="item.name">
+                        {{ item.name }}
+                    </div>
                 </div>
                 <div class="book-upload">
-                    <upload-book :accept-files="['.epub']" @create-success="createBookSuccess">
-                        <el-tooltip class="box-item" effect="dark" content="添加图书" placement="top">
+                    <upload-book
+                        :accept-files="['.epub']"
+                        @create-success="createBookSuccess"
+                    >
+                        <el-tooltip
+                            class="box-item"
+                            effect="dark"
+                            content="添加图书"
+                            placement="top"
+                        >
                             <div class="add-book-icon">
-                                <iconpark-icon name="add-one" size="24"></iconpark-icon>
+                                <iconpark-icon
+                                    name="add-one"
+                                    size="24"
+                                ></iconpark-icon>
                             </div>
                         </el-tooltip>
                     </upload-book>
@@ -28,24 +46,26 @@ import UploadBook from '../Upload/UploadBook.vue';
 const props = defineProps({
     name: {
         type: String,
-        default: "书架"
+        default: '书架',
     },
     bookList: {
         type: Array,
-        default: () => []
-    }
-})
-const emits = defineEmits(["select", "addBookSuccess"])
-
+        default: () => [],
+    },
+});
+const emits = defineEmits(['select', 'addBookSuccess']);
 
 function createBookSuccess() {
-    emits("addBookSuccess")
+    emits('addBookSuccess');
 }
 
 function handleClick(bookInfo: any) {
-    emits("select", bookInfo)
+    emits('select', bookInfo);
 }
 
+function getBookCover(url: string) {
+    return `${import.meta.env.VITE_FILE_BASE_URL}${url}`;
+}
 </script>
 <style lang="scss" scoped>
 .book-shelf {

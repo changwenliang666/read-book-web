@@ -12,8 +12,8 @@
 </template>
 <script lang="ts" setup>
 import { createBook } from '@/httpRequest/book';
-import { getUploadFileUrl } from '@/httpRequest/upload';
 import { showMessage } from '@/utils';
+import { uploadFile } from '@/utils/upload';
 import { computed, ref } from 'vue';
 
 const props = defineProps({
@@ -34,43 +34,34 @@ const acceptExt = computed(() => {
 function handleChange(e: any) {
     const file = e.target.files[0];
     if (verifyFile(file)) {
-        // startUpload(file).then(_ => {
-        //     emits("createSuccess")
-        // }, err => {
-        //     emits("createFail", err)
-        // })
-        getUploadFileUrl(file.name).then((res) => {
-            console.log('res---', res);
-            e.target.value = null;
-            if (res.code == 0) {
-                const xhr = new XMLHttpRequest();
-                xhr.open('PUT', res.data.upload_url, true);
-
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        console.log(
-                            '上传进度---',
-                            Math.round((e.loaded / e.total) * 100),
-                        );
+        e.target.value = null;
+        uploadFile(
+            file,
+            (key: string) => {
+                createBook(key).then((res) => {
+                    if (res.code === 0) {
+                        showMessage({
+                            type: 'success',
+                            message: '创建图书成功',
+                        });
+                    } else {
+                        showMessage({
+                            type: 'error',
+                            message: '创建图书失败',
+                        });
                     }
-                };
-
-                xhr.onload = () => {
-                    console.log('上传成功');
-                };
-
-                xhr.onerror = () => {
-                    console.log('上传失败');
-                };
-
-                xhr.send(file);
-            } else {
-                showMessage({
-                    type: 'success',
-                    message: '获取文件上传地址失败',
                 });
-            }
-        });
+            },
+            (progress: number) => {
+                console.log('上传进度', progress);
+            },
+            (errorMsg: string) => {
+                showMessage({
+                    type: 'error',
+                    message: errorMsg,
+                });
+            },
+        );
     }
 }
 
@@ -99,27 +90,27 @@ function verifyFile(file: File): boolean {
     return true;
 }
 
-const startUpload = (file: File) => {
-    let formData = new FormData();
-    formData.append('file', file);
-    return new Promise((resolve, reject) => {
-        createBook(formData)
-            .then((res) => {
-                if (res.code === 0) {
-                    showMessage({
-                        type: 'success',
-                        message: res.message,
-                    });
-                    resolve(true);
-                } else {
-                    reject(res.message);
-                }
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    });
-};
+// const startUpload = (file: File) => {
+//     let formData = new FormData();
+//     formData.append('file', file);
+//     return new Promise((resolve, reject) => {
+//         createBook(formData)
+//             .then((res) => {
+//                 if (res.code === 0) {
+//                     showMessage({
+//                         type: 'success',
+//                         message: res.message,
+//                     });
+//                     resolve(true);
+//                 } else {
+//                     reject(res.message);
+//                 }
+//             })
+//             .catch((err) => {
+//                 reject(err);
+//             });
+//     });
+// };
 </script>
 <style lang="scss" scoped>
 .upload-input {
