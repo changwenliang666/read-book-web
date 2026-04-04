@@ -19,7 +19,8 @@
                 <div class="book-upload">
                     <upload-file
                         :accept-files="['.epub']"
-                        @create-success="createBookSuccess"
+                        @upload-success="uploadSuccess"
+                        @upload-fail="uploadFail"
                     >
                         <el-tooltip
                             class="box-item"
@@ -42,6 +43,9 @@
 </template>
 <script setup lang="ts">
 import UploadFile from '@/components/Upload/UploadFile.vue';
+import { createBook, getCreateBookProgess } from '@/httpRequest/book';
+import { showMessage } from '@/utils';
+import { ref } from 'vue';
 
 const props = defineProps({
     name: {
@@ -54,6 +58,7 @@ const props = defineProps({
     },
 });
 const emits = defineEmits(['select', 'addBookSuccess']);
+const queryTimer = ref(null);
 
 function createBookSuccess() {
     emits('addBookSuccess');
@@ -65,6 +70,49 @@ function handleClick(bookInfo: any) {
 
 function getBookCover(url: string) {
     return `${import.meta.env.VITE_FILE_BASE_URL}${url}`;
+}
+
+function queryCreateBookProgress(taskId: string) {
+    clearTimeout(queryTimer.value);
+    queryTimer.value = setTimeout(() => {
+        getCreateBookProgess(taskId).then((res) => {
+            if (res.code === 0) {
+                if (
+                    res.data.status !== 'success' &&
+                    res.data.status !== 'fail'
+                ) {
+                    return queryCreateBookProgress(taskId);
+                } else if (res.data.status === 'success') {
+                    createBookSuccess();
+                } else if (res.data.status === 'fail') {
+                    showMessage({
+                        type: 'error',
+                        message: '创建图书失败',
+                    });
+                }
+            }
+        });
+    }, 2000);
+}
+
+function uploadSuccess(key: string) {
+    createBook(key).then((res) => {
+        if (res.code === 0) {
+            queryCreateBookProgress(res.data.task_id);
+        } else {
+            showMessage({
+                type: 'error',
+                message: '创建图书失败',
+            });
+        }
+    });
+}
+
+function uploadFail(errMsg: string) {
+    showMessage({
+        type: 'error',
+        message: errMsg,
+    });
 }
 </script>
 <style lang="scss" scoped>

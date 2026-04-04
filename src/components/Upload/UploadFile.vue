@@ -11,7 +11,6 @@
     />
 </template>
 <script lang="ts" setup>
-import { createBook } from '@/httpRequest/book';
 import { showMessage } from '@/utils';
 import { uploadFile } from '@/utils/upload';
 import { computed, ref } from 'vue';
@@ -23,7 +22,7 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(['createSuccess', 'createFail']);
+const emits = defineEmits(['uploadSuccess', 'uploadFail']);
 
 const inputBox = ref<any>(null);
 
@@ -38,28 +37,13 @@ function handleChange(e: any) {
         uploadFile(
             file,
             (key: string) => {
-                createBook(key).then((res) => {
-                    if (res.code === 0) {
-                        showMessage({
-                            type: 'success',
-                            message: '创建图书成功',
-                        });
-                    } else {
-                        showMessage({
-                            type: 'error',
-                            message: '创建图书失败',
-                        });
-                    }
-                });
+                emits('uploadSuccess', key);
             },
             (progress: number) => {
                 console.log('上传进度', progress);
             },
             (errorMsg: string) => {
-                showMessage({
-                    type: 'error',
-                    message: errorMsg,
-                });
+                emits('uploadFail', errorMsg);
             },
         );
     }

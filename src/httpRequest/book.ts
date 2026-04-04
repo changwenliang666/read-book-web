@@ -13,6 +13,12 @@ export function createBook(key: string) {
         .then((data) => data.data);
 }
 
+export function getCreateBookProgess(taskId: string) {
+    return request
+        .get(`/book/query-create-book-progress?taskId=${taskId}`)
+        .then((data) => data.data);
+}
+
 export function getBookDetail(bookId: number) {
     return request
         .get(`/book/get-book-detail?id=${bookId}`)
